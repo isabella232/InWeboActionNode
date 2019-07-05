@@ -20,11 +20,11 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>InWeboPushNode</artifactId>
+    <artifactId>InWeboActionNode</artifactId>
 
     <groupId>com.sorluc</groupId>
     <version>1.0.1</version>
-    <name>InWebo Auth Tree Node maven project</name>
+    <name>InWebo Auth Tree Node</name>
     <description>An Authentication Tree Node for ForgeRock's Identity Platform used to trigger InWebo PUSH, OTP and CHECK result</description>
 
     <properties>
