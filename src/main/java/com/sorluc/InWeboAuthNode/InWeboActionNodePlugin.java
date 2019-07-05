@@ -57,7 +57,7 @@ import org.forgerock.openam.plugins.PluginException;
  * @supported.all.api
  * @since AM 5.5.0
  */
-public class InWeboPushNodePlugin extends AbstractNodeAmPlugin {
+public class InWeboActionNodePlugin extends AbstractNodeAmPlugin {
 
 	static private String currentVersion = "1.0.1";
 
@@ -69,8 +69,8 @@ public class InWeboPushNodePlugin extends AbstractNodeAmPlugin {
      */
 	@Override
 	protected Map<String, Iterable<? extends Class<? extends Node>>> getNodesByVersion() {
-		return Collections.singletonMap(InWeboPushNodePlugin.currentVersion,
-				Collections.singletonList(InWeboPushNode.class));
+		return Collections.singletonMap(InWeboActionNodePlugin.currentVersion,
+				Collections.singletonList(InWeboActionNode.class));
 	}
 
     /**
@@ -112,7 +112,7 @@ public class InWeboPushNodePlugin extends AbstractNodeAmPlugin {
 	}*/
 	@Override
     public void upgrade(String fromVersion) throws PluginException {
-        pluginTools.upgradeAuthNode(InWeboPushNode.class);
+        pluginTools.upgradeAuthNode(InWeboActionNode.class);
         super.upgrade(fromVersion);
     }
     /**
@@ -123,6 +123,6 @@ public class InWeboPushNodePlugin extends AbstractNodeAmPlugin {
      */
 	@Override
 	public String getPluginVersion() {
-		return InWeboPushNodePlugin.currentVersion;
+		return InWeboActionNodePlugin.currentVersion;
 	}
 }

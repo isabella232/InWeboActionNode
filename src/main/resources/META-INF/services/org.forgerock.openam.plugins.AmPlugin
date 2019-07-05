@@ -14,4 +14,4 @@
 # Copyright 2017-2019 ForgeRock AS.
 #
 
-com.sorluc.InWeboAuthNode.InWeboPushNodePlugin
+com.sorluc.InWeboAuthNode.InWeboActionNodePlugin
