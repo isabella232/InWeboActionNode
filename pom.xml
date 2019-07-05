@@ -20,7 +20,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>inWeboPushNode</artifactId>
+    <artifactId>InWeboPushNode</artifactId>
 
     <groupId>com.sorluc</groupId>
     <version>1.0.1</version>

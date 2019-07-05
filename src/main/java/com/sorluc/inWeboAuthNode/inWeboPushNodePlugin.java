@@ -14,7 +14,7 @@
  * Copyright 2017-2018 ForgeRock AS.
  */
 
-package com.sorluc.inWeboAuthNode;
+package com.sorluc.InWeboAuthNode;
 
 import java.util.Collections;
 import java.util.Map;
@@ -57,7 +57,7 @@ import org.forgerock.openam.plugins.PluginException;
  * @supported.all.api
  * @since AM 5.5.0
  */
-public class inWeboPushNodePlugin extends AbstractNodeAmPlugin {
+public class InWeboPushNodePlugin extends AbstractNodeAmPlugin {
 
 	static private String currentVersion = "1.0.1";
 
@@ -69,8 +69,8 @@ public class inWeboPushNodePlugin extends AbstractNodeAmPlugin {
      */
 	@Override
 	protected Map<String, Iterable<? extends Class<? extends Node>>> getNodesByVersion() {
-		return Collections.singletonMap(inWeboPushNodePlugin.currentVersion,
-				Collections.singletonList(inWeboPushNode.class));
+		return Collections.singletonMap(InWeboPushNodePlugin.currentVersion,
+				Collections.singletonList(InWeboPushNode.class));
 	}
 
     /**
@@ -112,7 +112,7 @@ public class inWeboPushNodePlugin extends AbstractNodeAmPlugin {
 	}*/
 	@Override
     public void upgrade(String fromVersion) throws PluginException {
-        pluginTools.upgradeAuthNode(inWeboPushNode.class);
+        pluginTools.upgradeAuthNode(InWeboPushNode.class);
         super.upgrade(fromVersion);
     }
     /**
@@ -123,6 +123,6 @@ public class inWeboPushNodePlugin extends AbstractNodeAmPlugin {
      */
 	@Override
 	public String getPluginVersion() {
-		return inWeboPushNodePlugin.currentVersion;
+		return InWeboPushNodePlugin.currentVersion;
 	}
 }

@@ -15,7 +15,7 @@
  */
 
 
-package com.sorluc.inWeboAuthNode;
+package com.sorluc.InWeboAuthNode;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -75,11 +75,11 @@ import com.sun.identity.sm.RequiredValueValidator;
 /**
  * A node that triggers InWebo Push authentication.
  */
-@Node.Metadata(outcomeProvider  = inWeboPushNode.inWeboPushNodeOutcomeProvider.class,
-               configClass      = inWeboPushNode.Config.class)
-	public class inWeboPushNode implements Node {
+@Node.Metadata(outcomeProvider  = InWeboPushNode.InWeboPushNodeOutcomeProvider.class,
+               configClass      = InWeboPushNode.Config.class)
+	public class InWeboPushNode implements Node {
 
-    private final Logger logger = LoggerFactory.getLogger(inWeboPushNode.class);
+    private final Logger logger = LoggerFactory.getLogger(InWeboPushNode.class);
     private final Config config;
     private final Realm realm;
     
@@ -143,7 +143,7 @@ import com.sun.identity.sm.RequiredValueValidator;
      * @throws NodeProcessException If the configuration was not valid.
      */
     @Inject
-    public inWeboPushNode(@Assisted Config config, @Assisted Realm realm) throws NodeProcessException {
+    public InWeboPushNode(@Assisted Config config, @Assisted Realm realm) throws NodeProcessException {
         this.config = config;
         this.realm = realm;
     }
@@ -171,11 +171,11 @@ import com.sun.identity.sm.RequiredValueValidator;
     		try {
 				if(userIdentity == null || !userIdentity.isExists() || !userIdentity.isActive()) {
 					logger.error("Failed - process: user " + username + " doesn't exist but isInAM is required");
-				    return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+				    return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
 				}
 			} catch (SSOException | IdRepoException e) {
 				logger.error("Failed - process: SSOException | IdRepoException " + e.getMessage());
-			    return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+			    return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
 			}
     	}
     	
@@ -186,7 +186,7 @@ import com.sun.identity.sm.RequiredValueValidator;
     			"JKS", config.trustStoreAbsolutePath(), config.trustStorePassword());
     	if (sf == null) {
 			logger.error("Failed - process: createInWeboSSLSocketFactory");
-    		return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    		return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     	}
     	
     	/* If we are doing PUSH action, then inWebo action = pushAuthenticate
@@ -207,7 +207,7 @@ import com.sun.identity.sm.RequiredValueValidator;
     		    			
         	if (inWeboResp == null){
     			logger.error("Failed - process PUSH: callInwebo");
-    		    return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    		    return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
         	}
 
     		InputSource inputSourceInwebo = new InputSource();
@@ -219,25 +219,25 @@ import com.sun.identity.sm.RequiredValueValidator;
     			errInWebo = docInWebo.getElementsByTagName("err").item(0).getTextContent();
     		} catch (SAXException e) {
     			logger.error("Failed - process PUSH: SAXException " + e.getMessage());
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     		}catch (ParserConfigurationException e) {
     			logger.error("Failed - process PUSH: ParserConfigurationException " + e.getMessage());
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     		} catch (IOException e) {
     			logger.error("Failed - process PUSH: IOException " + e.getMessage());
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     		}
     		
     		logger.debug("process PUSH: errInwebo " + errInWebo);   
     		
     		if (errInWebo == null || errInWebo.isEmpty()) {
     			logger.error("Failed - process PUSH: No err response from InWebo");
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     		} else if (errInWebo.indexOf(":")>0 && errInWebo.subSequence(0,errInWebo.indexOf(":")).equals("NOK")){
     			logger.debug("errInwebo - code: " + errInWebo.subSequence(0,errInWebo.indexOf(":")));
     			logger.debug("errInwebo - message: " + errInWebo.substring(errInWebo.indexOf(":")+1));
     			logger.error("Failed - process PUSH: Error from InWebo");
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     		}else {
     			logger.debug("errInwebo - code: " + errInWebo);
     			logger.trace("Success - process PUSH: Push initiated at InWebo");
@@ -245,7 +245,7 @@ import com.sun.identity.sm.RequiredValueValidator;
     			return complete(context.sharedState.copy().
     					put("inWeboSessionId", docInWebo.getElementsByTagName("sessionId").item(0).getTextContent()).
     					put("inWeboAlias",docInWebo.getElementsByTagName("alias").item(0).getTextContent()),
-    					inWeboPushNodeOutcome.OK);
+    					InWeboPushNodeOutcome.OK);
     		}
         } 
     	/* If we are doing OTP action, then inWebo action = authenticateExtended
@@ -269,7 +269,7 @@ import com.sun.identity.sm.RequiredValueValidator;
         	
         	if (inWeboResp == null){
     			logger.error("Failed - process OTP: callInwebo");
-    		    return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    		    return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
         	}
         	
 
@@ -283,20 +283,20 @@ import com.sun.identity.sm.RequiredValueValidator;
     			errInWebo = docInWebo.getElementsByTagName("err").item(0).getTextContent();
     		} catch (SAXException e) {
     			logger.error("Failed - process OTP: SAXException " + e.getMessage());
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     		}catch (ParserConfigurationException e) {
     			logger.error("Failed - process OTP: ParserConfigurationException " + e.getMessage());
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     		} catch (IOException e) {
     			logger.error("Failed - process OTP: IOException " + e.getMessage());
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     		}
     		
         	
     		logger.debug("process OTP: errInwebo " + errInWebo);    						
     		if (errInWebo == null || errInWebo.isEmpty()) {
     			logger.error("Failed - process OTP: No err response from InWebo");
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     		/*} else if (
     				errInWebo.indexOf(":")>0 && 
     				errInWebo.subSequence(0,errInWebo.indexOf(":")).equals("NOK") && 
@@ -310,26 +310,15 @@ import com.sun.identity.sm.RequiredValueValidator;
     			logger.debug("errInwebo - code: " + errInWebo.subSequence(0,errInWebo.indexOf(":")));
     			logger.debug("errInwebo - message: " + errInWebo.substring(errInWebo.indexOf(":")+1));
     			logger.error("Failed - process OTP: Error from InWebo");
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     		}else {
     			logger.debug("errInwebo - code: " + errInWebo);
     			logger.trace("Success - process OTP: OTP validated at InWebo");
     			logger.trace("====================================== InWebo OTP Process end ======================================\n");
     			return complete(context.sharedState.copy().
     					put("inWeboAlias", docInWebo.getElementsByTagName("alias").item(0).getTextContent()).
-    					put("inWeboPlatform",docInWebo.getElementsByTagName("platform").item(0).getTextContent()),inWeboPushNodeOutcome.OK);
+    					put("inWeboPlatform",docInWebo.getElementsByTagName("platform").item(0).getTextContent()),InWeboPushNodeOutcome.OK);
     		}
-    		
-    		
-    		
-    		
-    		
-    		
-        	
-        	
-        	
-    		return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
-        	
         }
     	/* If we are doing the CHECK action, then inWebo action = checkPushResult
     	 * 
@@ -351,7 +340,7 @@ import com.sun.identity.sm.RequiredValueValidator;
         	
         	if (inWeboResp == null){
     			logger.error("Failed - process CHECK: callInwebo");
-    		    return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    		    return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
         	}
         	
 
@@ -365,20 +354,20 @@ import com.sun.identity.sm.RequiredValueValidator;
     			errInWebo = docInWebo.getElementsByTagName("err").item(0).getTextContent();
     		} catch (SAXException e) {
     			logger.error("Failed - process CHECK: SAXException " + e.getMessage());
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     		}catch (ParserConfigurationException e) {
     			logger.error("Failed - process CHECK: ParserConfigurationException " + e.getMessage());
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     		} catch (IOException e) {
     			logger.error("Failed - process CHECK: IOException " + e.getMessage());
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     		}
     		
         	
     		logger.debug("process CHECK: errInwebo " + errInWebo);    						
     		if (errInWebo == null || errInWebo.isEmpty()) {
     			logger.error("Failed - process CHECK: No err response from InWebo");
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     		} else if (
     				errInWebo.indexOf(":")>0 && 
     				errInWebo.subSequence(0,errInWebo.indexOf(":")).equals("NOK") && 
@@ -386,36 +375,36 @@ import com.sun.identity.sm.RequiredValueValidator;
     			logger.debug("errInwebo - code: " + errInWebo.subSequence(0,errInWebo.indexOf(":")));
     			logger.debug("errInwebo - message: " + errInWebo.substring(errInWebo.indexOf(":")+1));
     			logger.debug("Waiting - process CHECK: Wait for user action in inWebo");
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.WAIT);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.WAIT);
     		} else if (errInWebo.indexOf(":")>0 && errInWebo.subSequence(0,errInWebo.indexOf(":")).equals("NOK")){
     			logger.debug("errInwebo - code: " + errInWebo.subSequence(0,errInWebo.indexOf(":")));
     			logger.debug("errInwebo - message: " + errInWebo.substring(errInWebo.indexOf(":")+1));
     			logger.error("Failed - process CHECK: Error from InWebo");
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+    			return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
     		}else {
     			logger.debug("errInwebo - code: " + errInWebo);
     			logger.trace("Success - process CHECK: CHECK validated at InWebo");
     			logger.trace("====================================== InWebo CHECK Process end ======================================\n");
     			return complete(context.sharedState.copy().
     					put("inWeboAlias", docInWebo.getElementsByTagName("alias").item(0).getTextContent()).
-    					put("inWeboPlatform",docInWebo.getElementsByTagName("platform").item(0).getTextContent()),inWeboPushNodeOutcome.OK);
+    					put("inWeboPlatform",docInWebo.getElementsByTagName("platform").item(0).getTextContent()),InWeboPushNodeOutcome.OK);
     		}
         } else if (config.actionSelection().getValue().equals(InWeboAction.OTHER.getValue()) && !config.inWeboAction().isEmpty()){
         	/*
         	 * TODO implement default behavior when the user select OTHER action in the dropdown menu
         	 * @Return ERROR for the time being
         	 */
-        	return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+        	return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
         } else {
             logger.trace("-_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   ");
             logger.warn("process: No action defined - Check you entered a value for \"InWebo Push Action URL paramater\"");
     		logger.trace("====================================== InWebo Process end ======================================\n");
-            return complete(context.sharedState.copy(),inWeboPushNodeOutcome.ERROR);
+            return complete(context.sharedState.copy(),InWeboPushNodeOutcome.ERROR);
         }
     }
     
     
-    private Action complete(JsonValue sharedState, inWeboPushNodeOutcome outcome) {
+    private Action complete(JsonValue sharedState, InWeboPushNodeOutcome outcome) {
         return Action.goTo(outcome.getOutcome().id)
         		.replaceSharedState(sharedState)
         		.build();
@@ -532,7 +521,7 @@ import com.sun.identity.sm.RequiredValueValidator;
         /** Check */
         CHECK("CHECK"),
         /** OTP */
-        CHECK("OTP"),
+        OTP("OTP"),
         /** Check */
         OTHER("OTHER");
 
@@ -558,7 +547,7 @@ import com.sun.identity.sm.RequiredValueValidator;
     /**
      * The possible outcomes for the PollingWaitNode.
      */
-    public enum inWeboPushNodeOutcome {
+    public enum InWeboPushNodeOutcome {
         /**
          * The user has successfully validated with inWebo.
          */
@@ -578,7 +567,7 @@ import com.sun.identity.sm.RequiredValueValidator;
          * Constructor.
          * @param displayValue The value which is displayed to the user.
          */
-        inWeboPushNodeOutcome(String displayValue) {
+        InWeboPushNodeOutcome(String displayValue) {
             this.displayValue = displayValue;
         }
 
@@ -590,16 +579,16 @@ import com.sun.identity.sm.RequiredValueValidator;
     /**
      * Provides the outcomes for the polling wait node.
      * */
-    public static class inWeboPushNodeOutcomeProvider implements OutcomeProvider {
+    public static class InWeboPushNodeOutcomeProvider implements OutcomeProvider {
     	@Override
     	public List<Outcome> getOutcomes(PreferredLocales locales, JsonValue nodeAttributes) {
     		List<Outcome> outcomes = new ArrayList<>();
-    		outcomes.add(inWeboPushNodeOutcome.OK.getOutcome());
-    		outcomes.add(inWeboPushNodeOutcome.ERROR.getOutcome());
+    		outcomes.add(InWeboPushNodeOutcome.OK.getOutcome());
+    		outcomes.add(InWeboPushNodeOutcome.ERROR.getOutcome());
     		if (nodeAttributes.isNotNull()) {
     			// nodeAttributes is null when the node is created
     			if (nodeAttributes.get("actionSelection").asString().equals(InWeboAction.CHECK.getValue())) {
-    				outcomes.add(inWeboPushNodeOutcome.WAIT.getOutcome());
+    				outcomes.add(InWeboPushNodeOutcome.WAIT.getOutcome());
     			}
     		}
     		return outcomes;
