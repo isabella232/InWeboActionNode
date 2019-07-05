@@ -13,7 +13,7 @@
  *
  * Copyright 2019 ForgeRock AS.
 -->
-# setVarInSharedStateNode
+# InWeboPushNode
 
 A simple authentication node for ForgeRock's [Identity Platform][forgerock_platform] 6.5.0.1 and above. This node... **SHORT DESCRIPTION HERE**
 
