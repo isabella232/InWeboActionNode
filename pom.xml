@@ -24,8 +24,8 @@
 
     <groupId>com.sorluc</groupId>
     <version>1.0.1</version>
-    <name>inWebo Auth Tree Node maven project</name>
-    <description>An Authentication Tree Node for ForgeRock's Identity Platform used to trigger InWebo OTP</description>
+    <name>InWebo Auth Tree Node maven project</name>
+    <description>An Authentication Tree Node for ForgeRock's Identity Platform used to trigger InWebo PUSH, OTP and CHECK result</description>
 
     <properties>
         <am.version>6.5.0.1</am.version>
