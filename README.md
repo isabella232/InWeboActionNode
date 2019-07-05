@@ -15,7 +15,7 @@
 -->
 # InWeboPushNode
 
-A simple authentication node for ForgeRock's [Identity Platform][forgerock_platform] 6.5.0.1 and above. This node... **SHORT DESCRIPTION HERE**
+Authentication node for ForgeRock's [Identity Platform][forgerock_platform] 6.5.0.1 and above. This node... **SHORT DESCRIPTION HERE**
 
 
 Copy the .jar file from the ../target directory into the ../web-container/webapps/openam/WEB-INF/lib directory where AM is deployed.  Restart the web container to pick up the new node.  The node will then appear in the authentication trees components palette.
