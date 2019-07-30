@@ -123,6 +123,7 @@ import com.sun.identity.sm.RequiredValueValidator;
         @Password
         char[] keyStorePassword();
 
+        /*
         @Attribute(order = 800)
         default String trustStoreAbsolutePath() {
             return "/etc/alternatives/jre/lib/security/cacerts";
@@ -131,6 +132,7 @@ import com.sun.identity.sm.RequiredValueValidator;
         @Attribute(order = 900, validators = RequiredValueValidator.class)
         @Password
         char[] trustStorePassword();
+        */
     }
 
 
@@ -182,8 +184,8 @@ import com.sun.identity.sm.RequiredValueValidator;
     	// Create the SSL Factory for the double handshake with InWebo
     	SSLSocketFactory sf = null;
     	sf = createInWeboSSLSocketFactory(
-    			"PKCS12", config.keyStoreAbsolutePath(), config.keyStorePassword(),
-    			"JKS", config.trustStoreAbsolutePath(), config.trustStorePassword());
+    			"PKCS12", config.keyStoreAbsolutePath(), config.keyStorePassword());
+//    			"JKS", config.trustStoreAbsolutePath(), config.trustStorePassword());
     	if (sf == null) {
 			logger.error("Failed - process: createInWeboSSLSocketFactory");
     		return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
@@ -460,10 +462,10 @@ import com.sun.identity.sm.RequiredValueValidator;
     }
     
     private SSLSocketFactory createInWeboSSLSocketFactory(
-    			String clientStoreInst, String clientStorePath, char[] clientStorePass, 
-    			String trustStoreInst,  String trustStorePath, char[] trustStorePass) {
+    			String clientStoreInst, String clientStorePath, char[] clientStorePass) {
+//    			String trustStoreInst,  String trustStorePath, char[] trustStorePass) {
     	KeyStore clientStore;
-		KeyStore trustStore;
+		//KeyStore trustStore;
 		try {
 			clientStore = KeyStore.getInstance(clientStoreInst);
 			clientStore.load(new FileInputStream(clientStorePath), clientStorePass);
@@ -472,18 +474,19 @@ import com.sun.identity.sm.RequiredValueValidator;
 			kmf.init(clientStore, clientStorePass);
 			KeyManager[] kms = kmf.getKeyManagers();
 				
-			trustStore = KeyStore.getInstance(trustStoreInst);
-			trustStore.load(new FileInputStream(trustStorePath), trustStorePass);
+			//trustStore = KeyStore.getInstance(trustStoreInst);
+			//trustStore.load(new FileInputStream(trustStorePath), trustStorePass);
 			logger.trace("createInWeboSSLSocketFactory: trustStore loaded");
-			TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-			tmf.init(trustStore);
-			TrustManager[] tms = tmf.getTrustManagers();
+			//TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+			//tmf.init(trustStore);
+			//TrustManager[] tms = tmf.getTrustManagers();
 			
 			logger.trace("createInWeboSSLSocketFactory: TrustManager created");
 			
 			SSLContext sslContext = null;
 			sslContext = SSLContext.getInstance("TLS");
-			sslContext.init(kms, tms, new SecureRandom());
+//			sslContext.init(kms, tms, new SecureRandom());
+			sslContext.init(kms, null, new SecureRandom());
 			logger.trace("createInWeboSSLSocketFactory: sslContext init");
 			
 			return sslContext.getSocketFactory();
