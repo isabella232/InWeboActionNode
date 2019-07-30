@@ -159,7 +159,7 @@ import com.sun.identity.sm.RequiredValueValidator;
     	logger.trace("====================================== InWebo Process start ======================================\n");
     	traceDumpShareState(context);    	
     	username = context.sharedState.get("username").asString();
-    	// TODO don't use sharestate eto store otp
+    	// TODO don't use sharestate to store otp and implement a callback
     	otp = context.sharedState.get("otp").asString();
     	inWeboSessionId = context.sharedState.get("inWeboSessionId").asString();
     	
@@ -297,15 +297,6 @@ import com.sun.identity.sm.RequiredValueValidator;
     		if (errInWebo == null || errInWebo.isEmpty()) {
     			logger.error("Failed - process OTP: No err response from InWebo");
     			return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
-    		/*} else if (
-    				errInWebo.indexOf(":")>0 && 
-    				errInWebo.subSequence(0,errInWebo.indexOf(":")).equals("NOK") && 
-    				errInWebo.substring(errInWebo.indexOf(":")+1).equals("WAITING")){
-    			logger.debug("errInwebo - code: " + errInWebo.subSequence(0,errInWebo.indexOf(":")));
-    			logger.debug("errInwebo - message: " + errInWebo.substring(errInWebo.indexOf(":")+1));
-    			logger.debug("Waiting - process CHECK: Wait for user action in inWebo");
-    			return complete(context.sharedState.copy(),inWeboPushNodeOutcome.WAIT);
-    			*/
     		} else if (errInWebo.indexOf(":")>0 && errInWebo.subSequence(0,errInWebo.indexOf(":")).equals("NOK")){
     			logger.debug("errInwebo - code: " + errInWebo.subSequence(0,errInWebo.indexOf(":")));
     			logger.debug("errInwebo - message: " + errInWebo.substring(errInWebo.indexOf(":")+1));

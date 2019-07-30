@@ -12,7 +12,7 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2017-2018 ForgeRock AS.
+ * Copyright 2017-2019 ForgeRock AS.
  *
 -->
 
@@ -23,7 +23,7 @@
     <artifactId>InWeboActionNode</artifactId>
 
     <groupId>com.sorluc</groupId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>InWebo Auth Tree Node</name>
     <description>An Authentication Tree Node for ForgeRock's Identity Platform used to trigger InWebo PUSH, OTP and CHECK result</description>
 
