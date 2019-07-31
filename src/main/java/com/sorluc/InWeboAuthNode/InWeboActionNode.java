@@ -37,6 +37,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.inject.Inject;
 import javax.net.ssl.HttpsURLConnection;
@@ -44,8 +45,7 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
+import javax.security.auth.callback.PasswordCallback;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -58,6 +58,7 @@ import org.forgerock.openam.auth.node.api.OutcomeProvider;
 import org.forgerock.openam.auth.node.api.TreeContext;
 import org.forgerock.openam.core.realms.Realm;
 import org.forgerock.openam.sm.annotations.adapters.Password;
+import org.forgerock.openam.sm.validation.URLValidator;
 import org.forgerock.util.i18n.PreferredLocales;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +80,7 @@ import com.sun.identity.sm.RequiredValueValidator;
                configClass      = InWeboActionNode.Config.class)
 	public class InWeboActionNode implements Node {
 
+    private static final String BUNDLE = InWeboActionNode.class.getName().replace(".","/");
     private final Logger logger = LoggerFactory.getLogger(InWeboActionNode.class);
     private final Config config;
     private final Realm realm;
@@ -104,35 +106,24 @@ import com.sun.identity.sm.RequiredValueValidator;
         @Attribute(order = 300)
         String inWeboAction();
         
-        @Attribute(order = 400, validators = RequiredValueValidator.class)
+        @Attribute(order = 400, validators = {RequiredValueValidator.class, URLValidator.class})
         default String inWeboURL() {
             return "https://api.myinwebo.com/FS";
         }
         
-        @Attribute(order = 500, validators = RequiredValueValidator.class)
+        @Attribute(order = 500, validators = {RequiredValueValidator.class})
         default String serviceId() {
             return "5536";
         }
         
-        @Attribute(order = 600, validators = RequiredValueValidator.class)
+        @Attribute(order = 600, validators = {RequiredValueValidator.class})
         default String keyStoreAbsolutePath() {
             return "/home/sorluc/Forgerock_2019.p12";
         }
         
-        @Attribute(order = 700, validators = RequiredValueValidator.class)
+        @Attribute(order = 700, validators = {RequiredValueValidator.class})
         @Password
         char[] keyStorePassword();
-
-        /*
-        @Attribute(order = 800)
-        default String trustStoreAbsolutePath() {
-            return "/etc/alternatives/jre/lib/security/cacerts";
-        }
-        
-        @Attribute(order = 900, validators = RequiredValueValidator.class)
-        @Password
-        char[] trustStorePassword();
-        */
     }
 
 
@@ -155,14 +146,14 @@ import com.sun.identity.sm.RequiredValueValidator;
     	
 		Document docInWebo = null;
 		String username = null;
-		String otp = null;
+//		String otp = null;
         String inWeboSessionId = null;
 			
     	logger.trace("====================================== InWebo Process start ======================================\n");
     	traceDumpShareState(context);    	
     	username = context.sharedState.get("username").asString();
     	// TODO don't use sharestate to store otp and implement a callback
-    	otp = context.sharedState.get("otp").asString();
+    	//otp = context.sharedState.get("otp").asString();
     	inWeboSessionId = context.sharedState.get("inWeboSessionId").asString();
     	
     	// If it is requested that the user is in AM
@@ -183,9 +174,7 @@ import com.sun.identity.sm.RequiredValueValidator;
     	
     	// Create the SSL Factory for the double handshake with InWebo
     	SSLSocketFactory sf = null;
-    	sf = createInWeboSSLSocketFactory(
-    			"PKCS12", config.keyStoreAbsolutePath(), config.keyStorePassword());
-//    			"JKS", config.trustStoreAbsolutePath(), config.trustStorePassword());
+    	sf = createInWeboSSLSocketFactory("PKCS12", config.keyStoreAbsolutePath(), config.keyStorePassword());
     	if (sf == null) {
 			logger.error("Failed - process: createInWeboSSLSocketFactory");
     		return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
@@ -260,8 +249,20 @@ import com.sun.identity.sm.RequiredValueValidator;
     	 * 		&userId=<login name> //string
     	 * 		&token=<otp generated> //string
     	 */
-    	else if (config.actionSelection().getValue().equals(InWeboAction.OTP.getValue()) && !config.inWeboAction().isEmpty()){
+    	else if (config.actionSelection().getValue().equals(InWeboAction.OTP.getValue())){
     		logger.trace("process: OTP InWebo");
+    		
+
+            ResourceBundle bundle = context.request.locales.getBundleInPreferredLocale(BUNDLE, getClass().getClassLoader());
+    		return Action.send(new PasswordCallback(bundle.getString("callback.otp"), false)).build();
+/*    		
+            return context.getCallback(PasswordCallback.class)
+                    .map(PasswordCallback::getPassword)
+                    .map(String::new)
+                    .filter(password -> !Strings.isNullOrEmpty(password))
+                    .map(password -> checkPassword(context, password))
+                    .orElseGet(() -> collectPassword(context));
+ /*   		
 
         	String inWeboResp = null;
         	inWeboResp = callInWebo(sf,config.inWeboURL(), "authenticateExtended", config.serviceId(), username, null,otp);
@@ -312,6 +313,7 @@ import com.sun.identity.sm.RequiredValueValidator;
     					put("inWeboAlias", docInWebo.getElementsByTagName("alias").item(0).getTextContent()).
     					put("inWeboPlatform",docInWebo.getElementsByTagName("platform").item(0).getTextContent()),InWeboActionNodeOutcome.OK);
     		}
+    		*/
         }
     	/* If we are doing the CHECK action, then inWebo action = checkPushResult
     	 * 
@@ -323,7 +325,7 @@ import com.sun.identity.sm.RequiredValueValidator;
     	 * 		&sessionId=<session id> //string
     	 * 		&userId=<login> //string
     	 */
-    	else if(config.actionSelection().getValue().equals(InWeboAction.CHECK.getValue()) && !inWeboSessionId.isEmpty()){
+    	else if(config.actionSelection().getValue().equals(InWeboAction.CHECK.getValue())){
     		logger.trace("process: CHECK InWebo");
 
         	String inWeboResp = null;
@@ -387,6 +389,8 @@ import com.sun.identity.sm.RequiredValueValidator;
         	 * TODO implement default behavior when the user select OTHER action in the dropdown menu
         	 * @Return ERROR for the time being
         	 */
+        	logger.trace("process: OTHER InWebo");
+        	logger.trace("process: OTHER InWebo - not implemented");
         	return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
         } else {
             logger.trace("-_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   ");
@@ -402,6 +406,54 @@ import com.sun.identity.sm.RequiredValueValidator;
         		.replaceSharedState(sharedState)
         		.build();
     }
+    
+    
+    
+    
+    /**
+     *  TODO document this method
+     * @param context
+     * @param password
+     * @return
+     */
+    
+    private Action checkPassword(TreeContext context, String password) {
+        JsonValue oneTimePassword = context.sharedState.get("bla");
+        JsonValue passwordTimestamp = context.sharedState.get("otp");
+        logger.debug("oneTimePassword {} \n passwordTimestamp {}", oneTimePassword, passwordTimestamp);
+
+        boolean passwordMatches = oneTimePassword.isString()
+                && oneTimePassword.asString().equals(password)
+                && passwordTimestamp.isNumber();
+        logger.debug("passwordMatches {}", passwordMatches);
+        return complete(context.sharedState.copy(),InWeboActionNodeOutcome.OK);
+    }
+    
+    
+    
+    private Action collectPassword(TreeContext context) {
+        ResourceBundle bundle = context.request.locales.getBundleInPreferredLocale(BUNDLE, getClass().getClassLoader());
+        return Action.send(new PasswordCallback(bundle.getString("callback.password"), false)).build();
+    }
+    
+    /**
+     * 
+     * @param sf
+     * @param inWeboURL
+     * @param inWeboAction
+     * @param serviceId
+     * @param username
+     * @param sessionId
+     * @param otp
+     * @return
+     */
+    
+    
+    
+    
+    
+    
+    
     
     private String callInWebo(SSLSocketFactory sf,String inWeboURL, String inWeboAction, String serviceId, String username, String sessionId, String otp){
     	
@@ -463,9 +515,7 @@ import com.sun.identity.sm.RequiredValueValidator;
     
     private SSLSocketFactory createInWeboSSLSocketFactory(
     			String clientStoreInst, String clientStorePath, char[] clientStorePass) {
-//    			String trustStoreInst,  String trustStorePath, char[] trustStorePass) {
     	KeyStore clientStore;
-		//KeyStore trustStore;
 		try {
 			clientStore = KeyStore.getInstance(clientStoreInst);
 			clientStore.load(new FileInputStream(clientStorePath), clientStorePass);
@@ -473,19 +523,11 @@ import com.sun.identity.sm.RequiredValueValidator;
 	    	KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 			kmf.init(clientStore, clientStorePass);
 			KeyManager[] kms = kmf.getKeyManagers();
-				
-			//trustStore = KeyStore.getInstance(trustStoreInst);
-			//trustStore.load(new FileInputStream(trustStorePath), trustStorePass);
-			logger.trace("createInWeboSSLSocketFactory: trustStore loaded");
-			//TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-			//tmf.init(trustStore);
-			//TrustManager[] tms = tmf.getTrustManagers();
 			
 			logger.trace("createInWeboSSLSocketFactory: TrustManager created");
 			
 			SSLContext sslContext = null;
 			sslContext = SSLContext.getInstance("TLS");
-//			sslContext.init(kms, tms, new SecureRandom());
 			sslContext.init(kms, null, new SecureRandom());
 			logger.trace("createInWeboSSLSocketFactory: sslContext init");
 			
@@ -594,7 +636,7 @@ import com.sun.identity.sm.RequiredValueValidator;
      * @param context
      */
     private void traceDumpShareState (TreeContext context) {
-    	logger.trace("====================================== InWebo Push Dump sharedState ======================================\n"
+    	logger.trace("====================================== InWebo Action Node Dump sharedState ======================================\n"
     			+"realm="+context.sharedState.get("realm")
     			+"\n"+"authLevel="+context.sharedState.get("authLevel")
     			+"\n"+"targetAuthLevel="+context.sharedState.get("targetAuthLevel")

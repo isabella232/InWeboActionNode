@@ -23,7 +23,7 @@
     <artifactId>InWeboActionNode</artifactId>
 
     <groupId>com.sorluc</groupId>
-    <version>1.0.2</version>
+    <version>1.0.7</version>
     <name>InWebo Auth Tree Node</name>
     <description>An Authentication Tree Node for ForgeRock's Identity Platform used to trigger InWebo PUSH, OTP and CHECK result</description>
 
