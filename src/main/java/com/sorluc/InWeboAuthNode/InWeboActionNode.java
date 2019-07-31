@@ -318,11 +318,6 @@ import com.sun.identity.sm.RequiredValueValidator;
                 ResourceBundle bundle = context.request.locales.getBundleInPreferredLocale(BUNDLE, getClass().getClassLoader());
                 PasswordCallback passwordCallback = new PasswordCallback(bundle.getString("callback.otp"), true);
                 return Action.send(passwordCallback).build();
-                
-                //TextOutputCallback textOutputCallback = new TextOutputCallback(TextOutputCallback.ERROR,"Blah");
-                //ScriptTextOutputCallback scriptTextSubmitCallback = new ScriptTextOutputCallback(pave);
-                //ImmutableList<Callback> callbacks = ImmutableList.of(passwordCallback,textOutputCallback,scriptTextSubmitCallback);
-                //return Action.send(callbacks).build();
             }	
         }
     	
