@@ -605,7 +605,7 @@ public class InWeboActionNode implements Node {
 	 * @param context
 	 */
 	private void traceDumpShareState (TreeContext context) {
-		logger.trace("====================================== InWebo Action Node Dump sharedState ======================================\n"
+		logger.trace("============== InWebo Action Node Dump sharedState ==============\n"
 				+"realm="+context.sharedState.get("realm")
 				+"\n"+"authLevel="+context.sharedState.get("authLevel")
 				+"\n"+"targetAuthLevel="+context.sharedState.get("targetAuthLevel")
