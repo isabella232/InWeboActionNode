@@ -394,7 +394,7 @@ public class InWeboActionNode implements Node {
 		} else {
 			logger.trace("-_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   -_-'   ");
 			logger.warn("process: No action defined - Check you entered a value for \"InWebo Push Action URL paramater\"");
-			logger.trace("====================================== InWebo Process end ======================================\n");
+			logger.trace("============== InWebo Process end ==============\n");
 			return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
 		}
 	}
