@@ -17,6 +17,9 @@
 
 package com.sorluc.InWeboAuthNode;
 
+import static org.forgerock.openam.auth.node.api.Action.send;
+import static org.forgerock.openam.auth.node.api.SharedStateConstants.PASSWORD;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -37,6 +40,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javax.inject.Inject;
@@ -45,7 +49,9 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.TextOutputCallback;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -66,8 +72,10 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.google.common.collect.ImmutableList;
 import com.google.inject.assistedinject.Assisted;
 import com.iplanet.sso.SSOException;
+import com.sun.identity.authentication.callbacks.ScriptTextOutputCallback;
 import com.sun.identity.idm.AMIdentity;
 import com.sun.identity.idm.IdRepoException;
 import com.sun.identity.idm.IdUtils;
@@ -121,7 +129,7 @@ import com.sun.identity.sm.RequiredValueValidator;
             return "/home/sorluc/Forgerock_2019.p12";
         }
         
-        @Attribute(order = 700, validators = {RequiredValueValidator.class})
+        @Attribute(order = 700)
         @Password
         char[] keyStorePassword();
     }
@@ -146,7 +154,6 @@ import com.sun.identity.sm.RequiredValueValidator;
     	
 		Document docInWebo = null;
 		String username = null;
-//		String otp = null;
         String inWeboSessionId = null;
 			
     	logger.trace("====================================== InWebo Process start ======================================\n");
@@ -251,70 +258,74 @@ import com.sun.identity.sm.RequiredValueValidator;
     	 */
     	else if (config.actionSelection().getValue().equals(InWeboAction.OTP.getValue())){
     		logger.trace("process: OTP InWebo");
-    		
 
-            ResourceBundle bundle = context.request.locales.getBundleInPreferredLocale(BUNDLE, getClass().getClassLoader());
-    		return Action.send(new PasswordCallback(bundle.getString("callback.otp"), false)).build();
-/*    		
-            return context.getCallback(PasswordCallback.class)
-                    .map(PasswordCallback::getPassword)
-                    .map(String::new)
-                    .filter(password -> !Strings.isNullOrEmpty(password))
-                    .map(password -> checkPassword(context, password))
-                    .orElseGet(() -> collectPassword(context));
- /*   		
+            Optional<PasswordCallback> result = context.getCallback(PasswordCallback.class);
 
-        	String inWeboResp = null;
-        	inWeboResp = callInWebo(sf,config.inWeboURL(), "authenticateExtended", config.serviceId(), username, null,otp);
-        	logger.debug("process OTP: inWeboResp value " + inWeboResp);
-        	
-        	
-        	
-        	if (inWeboResp == null){
-    			logger.error("Failed - process OTP: callInwebo");
-    		    return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
-        	}
-        	
+            // Check if passwordCallback has been displayed and OTP has been entered in the form by end-user
+            if (result.isPresent()) {
+            	// If OTP has been entered, then submit it to InWebo to check
+            	String otp = result.map(PasswordCallback::getPassword).map(String::new).get();
+            	logger.debug("process OTP: otp entered " + otp);        
 
-    		InputSource inputSourceInwebo = new InputSource();
-    		inputSourceInwebo.setCharacterStream(new StringReader(inWeboResp));
-    		
-        	String errInWebo = null;
-    		
-        	try {
-    			docInWebo = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputSourceInwebo);
-    			errInWebo = docInWebo.getElementsByTagName("err").item(0).getTextContent();
-    		} catch (SAXException e) {
-    			logger.error("Failed - process OTP: SAXException " + e.getMessage());
-    			return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
-    		}catch (ParserConfigurationException e) {
-    			logger.error("Failed - process OTP: ParserConfigurationException " + e.getMessage());
-    			return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
-    		} catch (IOException e) {
-    			logger.error("Failed - process OTP: IOException " + e.getMessage());
-    			return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
-    		}
-    		
-        	
-    		logger.debug("process OTP: errInwebo " + errInWebo);    						
-    		if (errInWebo == null || errInWebo.isEmpty()) {
-    			logger.error("Failed - process OTP: No err response from InWebo");
-    			return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
-    		} else if (errInWebo.indexOf(":")>0 && errInWebo.subSequence(0,errInWebo.indexOf(":")).equals("NOK")){
-    			logger.debug("errInwebo - code: " + errInWebo.subSequence(0,errInWebo.indexOf(":")));
-    			logger.debug("errInwebo - message: " + errInWebo.substring(errInWebo.indexOf(":")+1));
-    			logger.error("Failed - process OTP: Error from InWebo");
-    			return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
-    		}else {
-    			logger.debug("errInwebo - code: " + errInWebo);
-    			logger.trace("Success - process OTP: OTP validated at InWebo");
-    			logger.trace("====================================== InWebo OTP Process end ======================================\n");
-    			return complete(context.sharedState.copy().
-    					put("inWeboAlias", docInWebo.getElementsByTagName("alias").item(0).getTextContent()).
-    					put("inWeboPlatform",docInWebo.getElementsByTagName("platform").item(0).getTextContent()),InWeboActionNodeOutcome.OK);
-    		}
-    		*/
+            	String inWeboResp = null;
+            	inWeboResp = callInWebo(sf,config.inWeboURL(), "authenticateExtended", config.serviceId(), username, null,otp);
+            	logger.debug("process OTP: inWeboResp value " + inWeboResp);
+            	         	
+            	if (inWeboResp == null){
+        			logger.error("Failed - process OTP: callInwebo");
+        		    return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
+            	}       	
+
+        		InputSource inputSourceInwebo = new InputSource();
+        		inputSourceInwebo.setCharacterStream(new StringReader(inWeboResp));
+        		
+            	String errInWebo = null;
+        		
+            	try {
+        			docInWebo = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputSourceInwebo);
+        			errInWebo = docInWebo.getElementsByTagName("err").item(0).getTextContent();
+        		} catch (SAXException e) {
+        			logger.error("Failed - process OTP: SAXException " + e.getMessage());
+        			return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
+        		}catch (ParserConfigurationException e) {
+        			logger.error("Failed - process OTP: ParserConfigurationException " + e.getMessage());
+        			return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
+        		} catch (IOException e) {
+        			logger.error("Failed - process OTP: IOException " + e.getMessage());
+        			return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
+        		}
+        		
+        		logger.debug("process OTP: errInwebo " + errInWebo);    						
+        		if (errInWebo == null || errInWebo.isEmpty()) {
+        			logger.error("Failed - process OTP: No err response from InWebo");
+        			return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
+        		} else if (errInWebo.indexOf(":")>0 && errInWebo.subSequence(0,errInWebo.indexOf(":")).equals("NOK")){
+        			logger.debug("errInwebo - code: " + errInWebo.subSequence(0,errInWebo.indexOf(":")));
+        			logger.debug("errInwebo - message: " + errInWebo.substring(errInWebo.indexOf(":")+1));
+        			logger.error("Failed - process OTP: Error from InWebo");
+        			return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
+        		}else {
+        			logger.debug("errInwebo - code: " + errInWebo);
+        			logger.trace("Success - process OTP: OTP validated at InWebo");
+        			logger.trace("====================================== InWebo OTP Process end ======================================\n");
+        			return complete(context.sharedState.copy().
+        					put("inWeboAlias", docInWebo.getElementsByTagName("alias").item(0).getTextContent()).
+        					put("inWeboPlatform",docInWebo.getElementsByTagName("platform").item(0).getTextContent()),InWeboActionNodeOutcome.OK);
+        		}         
+                
+            } else {
+            	// If no OTP has been entered, then display the password callback to prompt the use for OTP
+                ResourceBundle bundle = context.request.locales.getBundleInPreferredLocale(BUNDLE, getClass().getClassLoader());
+                PasswordCallback passwordCallback = new PasswordCallback(bundle.getString("callback.otp"), true);
+                return Action.send(passwordCallback).build();
+                
+                //TextOutputCallback textOutputCallback = new TextOutputCallback(TextOutputCallback.ERROR,"Blah");
+                //ScriptTextOutputCallback scriptTextSubmitCallback = new ScriptTextOutputCallback(pave);
+                //ImmutableList<Callback> callbacks = ImmutableList.of(passwordCallback,textOutputCallback,scriptTextSubmitCallback);
+                //return Action.send(callbacks).build();
+            }	
         }
+    	
     	/* If we are doing the CHECK action, then inWebo action = checkPushResult
     	 * 
     	 * InWebo Endpoint
@@ -406,55 +417,18 @@ import com.sun.identity.sm.RequiredValueValidator;
         		.replaceSharedState(sharedState)
         		.build();
     }
-    
-    
-    
-    
+        
     /**
-     *  TODO document this method
-     * @param context
-     * @param password
-     * @return
+     * Method used to call inWebo REST API. 
+     * @param sf SSL Socketfactory used to connect with InWebo server, using the client certificate provided by InWebo
+     * @param inWeboURL inWebo REST API base URL
+     * @param inWeboAction inWebo API action to use (pushAuthenticate, authenticateExtended, checkPushResult, ...)
+     * @param serviceId inWebo Service ID provided in the InWebo admin console
+     * @param username inWebo login of the user to authenticate
+     * @param sessionId when a push is triggered, a sessionID is issued by InWebo. It should be used to poll InWebo to check if the push has been validated by the user.
+     * @param otp The OTP to send to InWebo to be validated
+     * @return the inWebo server response (XML format).
      */
-    
-    private Action checkPassword(TreeContext context, String password) {
-        JsonValue oneTimePassword = context.sharedState.get("bla");
-        JsonValue passwordTimestamp = context.sharedState.get("otp");
-        logger.debug("oneTimePassword {} \n passwordTimestamp {}", oneTimePassword, passwordTimestamp);
-
-        boolean passwordMatches = oneTimePassword.isString()
-                && oneTimePassword.asString().equals(password)
-                && passwordTimestamp.isNumber();
-        logger.debug("passwordMatches {}", passwordMatches);
-        return complete(context.sharedState.copy(),InWeboActionNodeOutcome.OK);
-    }
-    
-    
-    
-    private Action collectPassword(TreeContext context) {
-        ResourceBundle bundle = context.request.locales.getBundleInPreferredLocale(BUNDLE, getClass().getClassLoader());
-        return Action.send(new PasswordCallback(bundle.getString("callback.password"), false)).build();
-    }
-    
-    /**
-     * 
-     * @param sf
-     * @param inWeboURL
-     * @param inWeboAction
-     * @param serviceId
-     * @param username
-     * @param sessionId
-     * @param otp
-     * @return
-     */
-    
-    
-    
-    
-    
-    
-    
-    
     private String callInWebo(SSLSocketFactory sf,String inWeboURL, String inWeboAction, String serviceId, String username, String sessionId, String otp){
     	
     	HttpsURLConnection conn = null;
@@ -513,6 +487,13 @@ import com.sun.identity.sm.RequiredValueValidator;
 		return inWeboResp;
     }
     
+    /**
+     * 
+     * @param clientStoreInst
+     * @param clientStorePath
+     * @param clientStorePass
+     * @return
+     */
     private SSLSocketFactory createInWeboSSLSocketFactory(
     			String clientStoreInst, String clientStorePath, char[] clientStorePass) {
     	KeyStore clientStore;
@@ -581,7 +562,7 @@ import com.sun.identity.sm.RequiredValueValidator;
     }
     
     /**
-     * The possible outcomes for the PollingWaitNode.
+     * The possible outcomes for the node.
      */
     public enum InWeboActionNodeOutcome {
         /**
@@ -613,7 +594,7 @@ import com.sun.identity.sm.RequiredValueValidator;
     }
     
     /**
-     * Provides the outcomes for the polling wait node.
+     * Provides the outcomes for the node.
      * */
     public static class InWeboActionNodeOutcomeProvider implements OutcomeProvider {
     	@Override

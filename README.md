@@ -29,9 +29,15 @@ Copy the .jar file from the ../target directory into the ../web-container/webapp
 The code in this repository has binary dependencies that live in the ForgeRock maven repository. Maven can be configured to authenticate to this repository by following the following [ForgeRock Knowledge Base Article](https://backstage.forgerock.com/knowledge/kb/article/a74096897).
 
 **SPECIFIC BUILD INSTRUCTIONS HERE**
+
 TODO
+
 **SCREENSHOTS ARE GOOD LIKE BELOW**
+
 TODO
+
 ![ScreenShot](./example.png)
+
 TODO
+
 [forgerock_platform]: https://www.forgerock.com/platform/  
