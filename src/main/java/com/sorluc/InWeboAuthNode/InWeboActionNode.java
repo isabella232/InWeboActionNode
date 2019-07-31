@@ -17,9 +17,6 @@
 
 package com.sorluc.InWeboAuthNode;
 
-import static org.forgerock.openam.auth.node.api.Action.send;
-import static org.forgerock.openam.auth.node.api.SharedStateConstants.PASSWORD;
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -49,9 +46,7 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
-import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.callback.TextOutputCallback;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -72,10 +67,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.google.common.collect.ImmutableList;
 import com.google.inject.assistedinject.Assisted;
 import com.iplanet.sso.SSOException;
-import com.sun.identity.authentication.callbacks.ScriptTextOutputCallback;
 import com.sun.identity.idm.AMIdentity;
 import com.sun.identity.idm.IdRepoException;
 import com.sun.identity.idm.IdUtils;
@@ -159,8 +152,7 @@ import com.sun.identity.sm.RequiredValueValidator;
     	logger.trace("====================================== InWebo Process start ======================================\n");
     	traceDumpShareState(context);    	
     	username = context.sharedState.get("username").asString();
-    	// TODO don't use sharestate to store otp and implement a callback
-    	//otp = context.sharedState.get("otp").asString();
+
     	inWeboSessionId = context.sharedState.get("inWeboSessionId").asString();
     	
     	// If it is requested that the user is in AM
@@ -316,7 +308,7 @@ import com.sun.identity.sm.RequiredValueValidator;
             } else {
             	// If no OTP has been entered, then display the password callback to prompt the use for OTP
                 ResourceBundle bundle = context.request.locales.getBundleInPreferredLocale(BUNDLE, getClass().getClassLoader());
-                PasswordCallback passwordCallback = new PasswordCallback(bundle.getString("callback.otp"), true);
+                PasswordCallback passwordCallback = new PasswordCallback(bundle.getString("callback.otp"), false);
                 return Action.send(passwordCallback).build();
             }	
         }
