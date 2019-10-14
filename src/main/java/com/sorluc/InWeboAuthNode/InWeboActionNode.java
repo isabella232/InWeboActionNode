@@ -584,7 +584,9 @@ public class InWeboActionNode implements Node {
 		CHECK("CHECK"),
 		/** OTP */
 		OTP("OTP"),
-		/** Check */
+		/** Virtual Authenticator */
+		VA("VA"),
+		/** Other */
 		OTHER("OTHER");
 
 		private String value;
