@@ -198,7 +198,7 @@ public class InWeboActionNode implements Node {
 		 * 		https://api.myinwebo.com/FS?action= pushAuthenticate + parameters
 		 * 	Mandatory parameters:
 		 * 		&serviceId= <service id> //integer
-		 * 		&userId=<login of the previsously authenticated user> //string
+		 * 		&userId=<login of the previously authenticated user> //string
 		 */
 		if (config.actionSelection().getValue().equals(InWeboAction.PUSH.getValue())) {
 			logger.debug("process: PUSH InWebo");
