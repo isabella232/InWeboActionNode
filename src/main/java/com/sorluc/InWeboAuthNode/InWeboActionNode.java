@@ -338,7 +338,7 @@ public class InWeboActionNode implements Node {
 
 			} else {
 				// If no OTP has been entered, then display the password callback to prompt the 
-				// use for OTP
+				// user for OTP
 				ResourceBundle bundle = context.request.locales.
 						getBundleInPreferredLocale(BUNDLE, getClass().getClassLoader());
 				PasswordCallback passwordCallback = 
@@ -365,7 +365,6 @@ public class InWeboActionNode implements Node {
 					sf,config.inWeboURL(), "checkPushResult", 
 					config.serviceId(), username, inWeboSessionId,null);
 			logger.debug("process CHECK: inWeboResp value " + inWeboResp);
-
 
 			if (inWeboResp == null){
 				logger.error("Failed - process CHECK: callInwebo");
@@ -395,12 +394,12 @@ public class InWeboActionNode implements Node {
 			}
 
 
-			logger.debug("process CHECK: errInwebo " + errInWebo);    						
+			logger.debug("process CHECK: errInwebo " + errInWebo);  
+			
 			if (errInWebo == null || errInWebo.isEmpty()) {
 				logger.error("Failed - process CHECK: No err response from InWebo");
 				return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
-			} else if (
-					errInWebo.indexOf(":")>0 && 
+			} else if (errInWebo.indexOf(":")>0 && 
 					errInWebo.subSequence(0,errInWebo.indexOf(":")).equals("NOK") && 
 					errInWebo.substring(errInWebo.indexOf(":")+1).equals("WAITING")){
 				logger.debug(
@@ -427,6 +426,27 @@ public class InWeboActionNode implements Node {
 						put("inWeboPlatform",docInWebo.getElementsByTagName("platform").
 								item(0).getTextContent()),InWeboActionNodeOutcome.OK);
 			}
+		} /* If we are doing the VA action, then inWebo action = checkPushResult
+		 * 
+		 * InWebo Endpoint
+		 * 	URL:
+		 * 		https://api.myinwebo.com/FS?action= checkPushResult + parameters
+		 * 	Mandatory parameters:
+		 * 		&serviceId= <service id> //integer
+		 * 		&sessionId=<session id> //string
+		 * 		&userId=<login> //string
+		 */
+		else if(config.actionSelection().getValue().equals(InWeboAction.CHECK.getValue())){
+			logger.trace("process: VA InWebo");
+			return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
+
+			
+			
+			
+			
+			
+			
+			
 		} else if (config.actionSelection().getValue().equals(InWeboAction.OTHER.getValue()) 
 				&& !config.inWeboAction().isEmpty()){
 			/*
@@ -529,10 +549,13 @@ public class InWeboActionNode implements Node {
 
 	/**
 	 * 
+	 * createInWeboSSLSocketFactory Create a SSL Factory to communicate securely with inWebo with SSL.
+	 * We do a double handshake for this SSL using the p12 client cert.
+	 * 
 	 * @param clientStoreInst
 	 * @param clientStorePath
 	 * @param clientStorePass
-	 * @return
+	 * @return clientStore
 	 */
 	private SSLSocketFactory createInWeboSSLSocketFactory(
 			String clientStoreInst, String clientStorePath, char[] clientStorePass) {
@@ -624,7 +647,7 @@ public class InWeboActionNode implements Node {
 		 */
 		WAIT("Wait"),
 		/**
-		 * inWebo error occurd.
+		 * inWebo error occurred.
 		 */
 		ERROR("Error");
 
