@@ -28,7 +28,7 @@
     <description>An Authentication Tree Node for ForgeRock's Identity Platform used to trigger InWebo PUSH, OTP and CHECK result</description>
 
     <properties>
-        <am.version>6.5.0.1</am.version>
+        <am.version>6.5.2.3</am.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

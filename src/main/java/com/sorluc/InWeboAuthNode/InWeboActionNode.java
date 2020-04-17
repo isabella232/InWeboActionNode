@@ -17,28 +17,29 @@
 
 package com.sorluc.InWeboAuthNode;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.io.BufferedReader;
+import java.net.URLEncoder;
+import java.net.URL;
+import java.net.HttpURLConnection;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.security.KeyStore;
+import java.io.FileInputStream;
+import java.security.SecureRandom;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.KeyStoreException;
+import java.security.UnrecoverableKeyException;
+import java.security.KeyManagementException;
+import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.ArrayList;
+
 
 import javax.inject.Inject;
 import javax.net.ssl.HttpsURLConnection;
@@ -82,26 +83,26 @@ import com.sun.identity.sm.RequiredValueValidator;
 		configClass = InWeboActionNode.Config.class)
 public class InWeboActionNode implements Node {
 
-	private static final String BUNDLE =
-			InWeboActionNode.class.getName().replace(".","/");
-	private final Logger logger = 
-			LoggerFactory.getLogger(InWeboActionNode.class);
+	private static final String BUNDLE = InWeboActionNode.class.getName().replace(".","/");
+	private final Logger logger = LoggerFactory.getLogger(InWeboActionNode.class);
 	private final Config config;
 	private final Realm realm;
 
 	/**
-	 * Configuration for the node.
+	 * Configuration of the node.
 	 */
 	public interface Config {
 		/**
 		 * 
 		 * List of attributes to set.
 		 */
+		// To specify it AM must checks if the user exists in AM UserStore
 		@Attribute(order = 100)
 		default boolean isInAM() {
 			return false;
 		}
 
+		// To choose the action to perform with the node
 		@Attribute(order = 200)
 		default InWeboAction actionSelection() {
 			return InWeboAction.PUSH;
@@ -110,22 +111,25 @@ public class InWeboActionNode implements Node {
 		@Attribute(order = 300)
 		String inWeboAction();
 
-		@Attribute(order = 400, validators = 
-			{RequiredValueValidator.class, URLValidator.class})
+		// InWebo API URL
+		@Attribute(order = 400, validators = {RequiredValueValidator.class, URLValidator.class})
 		default String inWeboURL() {
 			return "https://api.myinwebo.com/FS";
 		}
 
+		// InWebo customer number
 		@Attribute(order = 500, validators = {RequiredValueValidator.class})
 		default String serviceId() {
 			return "5536";
 		}
 
+		// Absolute path to thep12 certificate to use to communicate with InWebo API
 		@Attribute(order = 600, validators = {RequiredValueValidator.class})
 		default String keyStoreAbsolutePath() {
 			return "/home/sorluc/Forgerock_2019.p12";
 		}
 
+		// Password to use with InWebo API
 		@Attribute(order = 700)
 		@Password
 		char[] keyStorePassword();
@@ -156,6 +160,7 @@ public class InWeboActionNode implements Node {
 
 		logger.trace("============== InWebo Process start ==============\n");
 		traceDumpShareState(context);    	
+		
 		username = context.sharedState.get("username").asString();
 
 		inWeboSessionId = context.sharedState.get("inWeboSessionId").asString();
@@ -166,9 +171,7 @@ public class InWeboActionNode implements Node {
 			IdUtils.getIdentity(username, realm.asDN());
 			logger.trace("process: after getIdentity");
 			try {
-				if(userIdentity == null 
-						|| !userIdentity.isExists() 
-						|| !userIdentity.isActive()) {
+				if(userIdentity == null || !userIdentity.isExists() || !userIdentity.isActive()) {
 					logger.error("Failed - process: user " + username 
 							+ " doesn't exist but isInAM is required");
 					return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
