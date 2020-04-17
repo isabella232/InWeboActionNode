@@ -15,7 +15,7 @@
 -->
 # InWeboActionNode
 
-Authentication node for ForgeRock's [Identity Platform][forgerock_platform] 6.5.0.1 and above. This node is used to integrate with InWbo Strong authentication solution. It can be used in 3 differents ways: 1/ PUSH : this mode triggers a push authentiction on the InWebo mobile app, 2/ OTP : this mode retrieves an OTP from the sharedstate and validates it with InWebo, /3 CHECK : ... 
+Authentication node for ForgeRock's [Identity Platform][forgerock_platform] 6.5.0.1 and above. This node is used to integrate with InWbo Strong authentication solution. It can be used in 3 differents ways: 1/ PUSH : this mode triggers a push authentiction on the InWebo mobile app, 2/ OTP : this mode retrieves an OTP from the sharedstate and validates it with InWebo, /3 CHECK : .....
 
 **SHORT DESCRIPTION HERE**
 
