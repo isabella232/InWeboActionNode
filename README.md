@@ -15,7 +15,7 @@
 -->
 
 # InWeboActionNode
-## Short Description
+## Description
 Authentication node for ForgeRock's [Identity Platform][forgerock_platform] 6.5.0.1 and above. 
 This node is used to integrate with [InWebo Strong authentication](https://www.inwebo.com/) solution.
 It can be used in 4 different ways: 
@@ -26,19 +26,18 @@ phone,
 4. *VA*: Display inWebo's Virtual authenticator to the end-user for authentication.
 
 
-## How to 
-### Deploy
+## Deploy
 Copy the `.jar` file from the `../target` directory into the 
 `../web-container/webapps/openam/WEB-INF/lib` directory where AM is deployed.
 Restart the web container to pick up the new node.
 The node will then appear in the authentication trees designer.
 
-### Specific deployment instructions
+**Specific deployment instructions**
 
 - inWebo dependencies - TODO
 - The code in this repository has binary dependencies that live in the ForgeRock maven repository. Maven can be configured to authenticate to this repository by following the following [ForgeRock Knowledge Base Article](https://backstage.forgerock.com/knowledge/kb/article/a74096897).
 
-### Usage
+## Usage
 
 **SCREENSHOTS ARE GOOD LIKE BELOW**
 
