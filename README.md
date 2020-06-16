@@ -47,9 +47,9 @@ Maven can be configured to authenticate to this repository by following the foll
 This node can be used in 4 different mode explained below.
 ### *PUSH* mode
 TODO
-#### *CHECK* mode
+### *CHECK* mode
 TODO
-##### *OTP* mode
+### *OTP* mode
 TODO
 ### *VA* mode
 [inWebo Virtual Authenticator documentation](https://inwebo.atlassian.net/wiki/spaces/DOCS/pages/1687770/Quickstart+inWebo+Virtual+Authenticator)
