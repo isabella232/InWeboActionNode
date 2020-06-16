@@ -41,12 +41,12 @@ The node will then appear in the authentication trees designer.
 - The code in this repository has binary dependencies that live in the ForgeRock maven repository. Maven can be configured to authenticate to this repository by following the following [ForgeRock Knowledge Base Article](https://backstage.forgerock.com/knowledge/kb/article/a74096897).
 
 ## Usage
-
-**SCREENSHOTS ARE GOOD LIKE BELOW**
-
+### *PUSH* mode
 TODO
-
-
+### *CHECK* mode
 TODO
-
+### *OTP* mode
+TODO
+### *VA* mode
+TODO
 [forgerock_platform]: https://www.forgerock.com/platform/  
