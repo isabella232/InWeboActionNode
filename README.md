@@ -24,6 +24,9 @@ phone,
 3. *OTP*: this mode retrieves an OTP from the `sharedstate` and validates it with InWebo, 
 4. *VA*: Display inWebo's Virtual authenticator to the end-user for authentication.
 
+The Figure below shows an example of an authentication tree that is using this node with different
+modes. 
+![inWeboExampleTree](./inWeboExampleTree.png)
 
 ## Deploy
 Copy the `.jar` file from the `../target` directory into the 
@@ -42,7 +45,6 @@ The node will then appear in the authentication trees designer.
 
 TODO
 
-![ScreenShot](./inWeboSampleTree.png)
 
 TODO
 
