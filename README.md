@@ -16,7 +16,7 @@
 
 # InWeboActionNode
 Authentication node for ForgeRock's [Identity Platform][forgerock_platform] 6.5.0.1 and above. 
-This node is used to integrate with [InWebo Strong authentication](https://www.inwebo.com/) 
+This node is used to integrate with [inWebo Strong authentication](https://www.inwebo.com/) 
 solution.
 It can be used in 4 different ways: 
 1. *PUSH*: this mode triggers a push authentication on the inWebo mobile app, 
@@ -38,10 +38,10 @@ The node will then appear in the authentication trees designer.
 
 **Specific deployment instructions**
 
-- inWebo dependencies - TODO
 - The code in this repository has binary dependencies that live in the ForgeRock maven repository.
 Maven can be configured to authenticate to this repository by following the following 
 [ForgeRock Knowledge Base Article](https://backstage.forgerock.com/knowledge/kb/article/a74096897).
+- inWebo requirements - TODO
 
 ## Usage
 This node can be used in 4 different mode explained below.
