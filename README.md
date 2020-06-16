@@ -55,7 +55,7 @@ TODO
 [inWebo Virtual Authenticator documentation](https://inwebo.atlassian.net/wiki/spaces/DOCS/pages/1687770/Quickstart+inWebo+Virtual+Authenticator)
 TODO
 
-[forgerock_platform](https://www.forgerock.com/platform/)
-TODO 
 
 ![Helium documentation](https://api.media.atlassian.com/file/16b58e75-7fec-4294-9213-de7f1f2d84f6/binary?token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjMGM0NjlhNC1hMDcyLTQyZTYtYmMwNi04MzNhOTcwYjE2OWEiLCJhY2Nlc3MiOnsidXJuOmZpbGVzdG9yZTpmaWxlOjE2YjU4ZTc1LTdmZWMtNDI5NC05MjEzLWRlN2YxZjJkODRmNiI6WyJyZWFkIl19LCJleHAiOjE1OTI0MDI3MjYsIm5iZiI6MTU5MjMxOTc0Nn0.Lqp-cDbIgh4WLjPQU4-1-xaaGCgHJhlVxN8ZKdipxqk&client=c0c469a4-a072-42e6-bc06-833a970b169a&name=Mode2HE.png&max-age=2940&width=604&height=400)
+
+[forgerock_platform](https://www.forgerock.com/platform/)
