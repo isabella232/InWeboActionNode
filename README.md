@@ -42,7 +42,7 @@ The node will then appear in the authentication trees designer.
 
 TODO
 
-![ScreenShot](./example.pninWeboSampleTree.png)
+![ScreenShot](./inWeboSampleTree.png)
 
 TODO
 
