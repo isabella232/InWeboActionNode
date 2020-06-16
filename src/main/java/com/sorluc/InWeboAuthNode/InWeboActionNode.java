@@ -78,6 +78,7 @@ import com.sun.identity.sm.RequiredValueValidator;
 /**
  * A node that triggers InWebo Push authentication. 
  */
+
 @Node.Metadata(
 		outcomeProvider = InWeboActionNode.InWeboActionNodeOutcomeProvider.class,
 		configClass = InWeboActionNode.Config.class)
