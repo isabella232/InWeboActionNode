@@ -15,7 +15,7 @@
 -->
 
 # InWeboActionNode
-## Description
+**Description**
 Authentication node for ForgeRock's [Identity Platform][forgerock_platform] 6.5.0.1 and above. 
 This node is used to integrate with [InWebo Strong authentication](https://www.inwebo.com/) solution.
 It can be used in 4 different ways: 
