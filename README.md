@@ -16,7 +16,8 @@
 
 # InWeboActionNode
 Authentication node for ForgeRock's [Identity Platform][forgerock_platform] 6.5.0.1 and above. 
-This node is used to integrate with [InWebo Strong authentication](https://www.inwebo.com/) solution.
+This node is used to integrate with [InWebo Strong authentication](https://www.inwebo.com/) 
+solution.
 It can be used in 4 different ways: 
 1. *PUSH*: this mode triggers a push authentication on the inWebo mobile app, 
 2. *CHECK* : use this mode to request inWebo if the end-user has done the push action on her mobile
@@ -38,15 +39,23 @@ The node will then appear in the authentication trees designer.
 **Specific deployment instructions**
 
 - inWebo dependencies - TODO
-- The code in this repository has binary dependencies that live in the ForgeRock maven repository. Maven can be configured to authenticate to this repository by following the following [ForgeRock Knowledge Base Article](https://backstage.forgerock.com/knowledge/kb/article/a74096897).
+- The code in this repository has binary dependencies that live in the ForgeRock maven repository.
+Maven can be configured to authenticate to this repository by following the following 
+[ForgeRock Knowledge Base Article](https://backstage.forgerock.com/knowledge/kb/article/a74096897).
 
 ## Usage
+This node can be used in 4 different mode explained below.
 ### *PUSH* mode
 TODO
-### *CHECK* mode
+#### *CHECK* mode
 TODO
-### *OTP* mode
+##### *OTP* mode
 TODO
 ### *VA* mode
+[inWebo Virtual Authenticator documentation](https://inwebo.atlassian.net/wiki/spaces/DOCS/pages/1687770/Quickstart+inWebo+Virtual+Authenticator)
 TODO
-[forgerock_platform]: https://www.forgerock.com/platform/  
+
+[forgerock_platform](https://www.forgerock.com/platform/)
+TODO 
+
+![Helium documentation](https://api.media.atlassian.com/file/16b58e75-7fec-4294-9213-de7f1f2d84f6/binary?token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjMGM0NjlhNC1hMDcyLTQyZTYtYmMwNi04MzNhOTcwYjE2OWEiLCJhY2Nlc3MiOnsidXJuOmZpbGVzdG9yZTpmaWxlOjE2YjU4ZTc1LTdmZWMtNDI5NC05MjEzLWRlN2YxZjJkODRmNiI6WyJyZWFkIl19LCJleHAiOjE1OTI0MDI3MjYsIm5iZiI6MTU5MjMxOTc0Nn0.Lqp-cDbIgh4WLjPQU4-1-xaaGCgHJhlVxN8ZKdipxqk&client=c0c469a4-a072-42e6-bc06-833a970b169a&name=Mode2HE.png&max-age=2940&width=604&height=400)
