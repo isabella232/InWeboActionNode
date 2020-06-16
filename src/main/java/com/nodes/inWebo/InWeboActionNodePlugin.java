@@ -14,7 +14,7 @@
  * Copyright 2017-2019 ForgeRock AS.
  */
 
-package com.sorluc.InWeboAuthNode;
+package com.nodes.inWebo;
 
 import java.util.Collections;
 import java.util.Map;

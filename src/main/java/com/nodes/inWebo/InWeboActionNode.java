@@ -15,7 +15,7 @@
  */
 
 
-package com.sorluc.InWeboAuthNode;
+package com.nodes.inWebo;
 
 import java.io.IOException;
 import java.io.StringReader;
