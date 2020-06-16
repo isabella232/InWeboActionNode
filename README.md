@@ -25,7 +25,8 @@ phone,
 4. *VA*: Display inWebo's Virtual authenticator to the end-user for authentication.
 
 The Figure below shows an example of an authentication tree that is using this node with different
-modes. 
+modes: 
+ 
 ![inWeboExampleTree](./inWeboExampleTree.png)
 
 ## Deploy
