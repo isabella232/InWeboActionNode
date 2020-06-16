@@ -11,26 +11,34 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2019 ForgeRock AS.
+ * Copyright 2020 ForgeRock AS.
 -->
+
 # InWeboActionNode
+## Short Description
+Authentication node for ForgeRock's [Identity Platform][forgerock_platform] 6.5.0.1 and above. 
+This node is used to integrate with [InWebo Strong authentication](https://www.inwebo.com/) solution.
+It can be used in 4 different ways: 
+1. *PUSH*: this mode triggers a push authentication on the inWebo mobile app, 
+2. *CHECK* : use this mode to request inWebo if the end-user has done the push action on her mobile
+phone, 
+3. *OTP*: this mode retrieves an OTP from the `sharedstate` and validates it with InWebo, 
+4. *VA*: Display inWebo's Virtual authenticator to the end-user for authentication.
 
-Authentication node for ForgeRock's [Identity Platform][forgerock_platform] 6.5.0.1 and above. This node is used to integrate with InWbo Strong authentication solution. It can be used in 3 differents ways: 1/ PUSH : this mode triggers a push authentiction on the InWebo mobile app, 2/ OTP : this mode retrieves an OTP from the sharedstate and validates it with InWebo, /3 CHECK : .....
 
-**SHORT DESCRIPTION HERE**
+## How to 
+### Deploy
+Copy the `.jar` file from the `../target` directory into the 
+`../web-container/webapps/openam/WEB-INF/lib` directory where AM is deployed.
+Restart the web container to pick up the new node.
+The node will then appear in the authentication trees designer.
 
+### Specific deployment instructions
 
-Copy the .jar file from the ../target directory into the ../web-container/webapps/openam/WEB-INF/lib directory where AM is deployed.  Restart the web container to pick up the new node.  The node will then appear in the authentication trees components palette.
+- inWebo dependencies - TODO
+- The code in this repository has binary dependencies that live in the ForgeRock maven repository. Maven can be configured to authenticate to this repository by following the following [ForgeRock Knowledge Base Article](https://backstage.forgerock.com/knowledge/kb/article/a74096897).
 
-
-**USAGE HERE**
-
-
-The code in this repository has binary dependencies that live in the ForgeRock maven repository. Maven can be configured to authenticate to this repository by following the following [ForgeRock Knowledge Base Article](https://backstage.forgerock.com/knowledge/kb/article/a74096897).
-
-**SPECIFIC BUILD INSTRUCTIONS HERE**
-
-TODO
+### Usage
 
 **SCREENSHOTS ARE GOOD LIKE BELOW**
 

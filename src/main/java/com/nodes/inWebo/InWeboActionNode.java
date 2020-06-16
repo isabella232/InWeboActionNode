@@ -440,14 +440,6 @@ public class InWeboActionNode implements Node {
 		else if(config.actionSelection().getValue().equals(InWeboAction.CHECK.getValue())){
 			logger.trace("process: VA InWebo");
 			return complete(context.sharedState.copy(),InWeboActionNodeOutcome.ERROR);
-
-			
-			
-			
-			
-			
-			
-			
 		} else if (config.actionSelection().getValue().equals(InWeboAction.OTHER.getValue()) 
 				&& !config.inWeboAction().isEmpty()){
 			/*
@@ -525,7 +517,6 @@ public class InWeboActionNode implements Node {
 					inWeboResp+=output;
 				}
 			}
-
 		} catch (UnsupportedEncodingException e) {
 			logger.error("Failed - callInWebo: UnsupportedEncodingException " + e.getMessage());
 		} catch (MalformedURLException e) {
